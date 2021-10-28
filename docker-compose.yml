@@ -1,0 +1,37 @@
+version: "3.9"
+
+services:
+  django:
+    build:
+      context: .
+      dockerfile: ./docker/local/django/Dockerfile
+    env_file:
+      - ./env/local/django.env
+      - ./env/local/postgres.env
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    depends_on:
+      - postgres
+    command: ['python', 'manage.py', 'runserver', '0.0.0.0:8000']
+    networks:
+      store_main: {}
+
+  postgres:
+    image: postgres:14.0-alpine
+    shm_size: '1gb'
+    env_file:
+      - ./env/local/postgres.env
+    volumes:
+      - database:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      store_main: {}
+
+networks:
+  store_main: {}
+
+volumes:
+  database: {}
