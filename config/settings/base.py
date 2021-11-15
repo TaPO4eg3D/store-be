@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'corsheaders',
+    'drf_yasg',
 
     # Internal apps
     'main',
@@ -145,13 +146,3 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
-# TODO: Only for development
-if DEBUG:
-    MEDIA_ROOT = BASE_DIR / 'media/'
-    MEDIA_URL = 'media/'
-
-    STATIC_ROOT = BASE_DIR / 'static/'
-
-    CORS_ALLOW_ALL_ORIGINS = True

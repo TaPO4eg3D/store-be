@@ -63,6 +63,11 @@ class Product(TimeStampModel):
         on_delete=models.CASCADE,
     )
 
+    additional_options = models.JSONField(
+        null=True,
+        blank=True,
+    )
+
     def __str__(self) -> str:
         return self.name
 

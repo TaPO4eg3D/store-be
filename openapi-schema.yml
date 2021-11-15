@@ -1,0 +1,912 @@
+openapi: 3.0.2
+info:
+  title: ''
+  version: ''
+paths:
+  /api/popular-products:
+    get:
+      operationId: listPopularProducts
+      description: Get the list of Popular Products
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {}
+          description: ''
+      tags:
+      - api
+  /api/filters/price-range:
+    get:
+      operationId: listPriceRanges
+      description: 'Get the price range (used for filtering).
+
+        Calculated by analyzing a price of each represented product'
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {}
+          description: ''
+      tags:
+      - api
+  /api/categories/:
+    get:
+      operationId: listCategorys
+      description: Get list of all available categories
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=400&limit=100
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=200&limit=100
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Category'
+          description: ''
+      tags:
+      - api
+    post:
+      operationId: createCategory
+      description: Get list of all available categories
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Category'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Category'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Category'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+      tags:
+      - api
+  /api/categories/{id}/:
+    get:
+      operationId: retrieveCategory
+      description: Get list of all available categories
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this category.
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+      tags:
+      - api
+    put:
+      operationId: updateCategory
+      description: Get list of all available categories
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this category.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Category'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Category'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Category'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+      tags:
+      - api
+    patch:
+      operationId: partialUpdateCategory
+      description: Get list of all available categories
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this category.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Category'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Category'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Category'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+      tags:
+      - api
+    delete:
+      operationId: destroyCategory
+      description: Get list of all available categories
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this category.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+      tags:
+      - api
+  /api/products/:
+    get:
+      operationId: listProducts
+      description: Get list of products
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - name: category
+        required: false
+        in: query
+        description: category
+        schema:
+          type: string
+      - name: id
+        required: false
+        in: query
+        description: id
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=400&limit=100
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=200&limit=100
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+          description: ''
+      tags:
+      - api
+    post:
+      operationId: createProduct
+      description: Get list of products
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Product'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+          description: ''
+      tags:
+      - api
+  /api/products/{id}/:
+    get:
+      operationId: retrieveProduct
+      description: Get list of products
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this product.
+        schema:
+          type: string
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - name: category
+        required: false
+        in: query
+        description: category
+        schema:
+          type: string
+      - name: id
+        required: false
+        in: query
+        description: id
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+          description: ''
+      tags:
+      - api
+    put:
+      operationId: updateProduct
+      description: Get list of products
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this product.
+        schema:
+          type: string
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - name: category
+        required: false
+        in: query
+        description: category
+        schema:
+          type: string
+      - name: id
+        required: false
+        in: query
+        description: id
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Product'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+          description: ''
+      tags:
+      - api
+    patch:
+      operationId: partialUpdateProduct
+      description: Get list of products
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this product.
+        schema:
+          type: string
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - name: category
+        required: false
+        in: query
+        description: category
+        schema:
+          type: string
+      - name: id
+        required: false
+        in: query
+        description: id
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Product'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+          description: ''
+      tags:
+      - api
+    delete:
+      operationId: destroyProduct
+      description: Get list of products
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this product.
+        schema:
+          type: string
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - name: category
+        required: false
+        in: query
+        description: category
+        schema:
+          type: string
+      - name: id
+        required: false
+        in: query
+        description: id
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+      tags:
+      - api
+  /api/home-page-slides/:
+    get:
+      operationId: listHomePageSlides
+      description: Get sides for Home Page slider
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=400&limit=100
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=200&limit=100
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HomePageSlide'
+          description: ''
+      tags:
+      - api
+    post:
+      operationId: createHomePageSlide
+      description: Get sides for Home Page slider
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HomePageSlide'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/HomePageSlide'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/HomePageSlide'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomePageSlide'
+          description: ''
+      tags:
+      - api
+  /api/home-page-slides/{id}/:
+    get:
+      operationId: retrieveHomePageSlide
+      description: Get sides for Home Page slider
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this home page slide.
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomePageSlide'
+          description: ''
+      tags:
+      - api
+    put:
+      operationId: updateHomePageSlide
+      description: Get sides for Home Page slider
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this home page slide.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HomePageSlide'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/HomePageSlide'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/HomePageSlide'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomePageSlide'
+          description: ''
+      tags:
+      - api
+    patch:
+      operationId: partialUpdateHomePageSlide
+      description: Get sides for Home Page slider
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this home page slide.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HomePageSlide'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/HomePageSlide'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/HomePageSlide'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomePageSlide'
+          description: ''
+      tags:
+      - api
+    delete:
+      operationId: destroyHomePageSlide
+      description: Get sides for Home Page slider
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this home page slide.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+      tags:
+      - api
+  /api/recommended-product-slides/:
+    get:
+      operationId: listRecommendedProductSlides
+      description: Get slides for Recommended Products slider
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=400&limit=100
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=200&limit=100
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/RecommendedProductSlide'
+          description: ''
+      tags:
+      - api
+    post:
+      operationId: createRecommendedProductSlide
+      description: Get slides for Recommended Products slider
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecommendedProductSlide'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RecommendedProductSlide'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RecommendedProductSlide'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecommendedProductSlide'
+          description: ''
+      tags:
+      - api
+  /api/recommended-product-slides/{id}/:
+    get:
+      operationId: retrieveRecommendedProductSlide
+      description: Get slides for Recommended Products slider
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this recommended product slide.
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecommendedProductSlide'
+          description: ''
+      tags:
+      - api
+    put:
+      operationId: updateRecommendedProductSlide
+      description: Get slides for Recommended Products slider
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this recommended product slide.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecommendedProductSlide'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RecommendedProductSlide'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RecommendedProductSlide'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecommendedProductSlide'
+          description: ''
+      tags:
+      - api
+    patch:
+      operationId: partialUpdateRecommendedProductSlide
+      description: Get slides for Recommended Products slider
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this recommended product slide.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecommendedProductSlide'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RecommendedProductSlide'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RecommendedProductSlide'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecommendedProductSlide'
+          description: ''
+      tags:
+      - api
+    delete:
+      operationId: destroyRecommendedProductSlide
+      description: Get slides for Recommended Products slider
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this recommended product slide.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+      tags:
+      - api
+components:
+  schemas:
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 120
+        child:
+          type: string
+          readOnly: true
+      required:
+      - name
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 512
+        price:
+          type: string
+          format: decimal
+          multipleOf: 0.01
+          maximum: 10000000000
+          minimum: -10000000000
+        discount_price:
+          type: string
+          format: decimal
+          multipleOf: 0.01
+          maximum: 10000000000
+          minimum: -10000000000
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        preview_image:
+          type: string
+          format: binary
+          nullable: true
+        category:
+          type: object
+          properties:
+            id:
+              type: integer
+              readOnly: true
+            name:
+              type: string
+              maxLength: 120
+          required:
+          - name
+      required:
+      - name
+      - price
+      - category
+    HomePageSlide:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        image:
+          type: string
+          format: binary
+        order:
+          type: integer
+          maximum: 32767
+          minimum: 0
+      required:
+      - image
+      - order
+    RecommendedProductSlide:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        product:
+          type: object
+          properties:
+            id:
+              type: integer
+              readOnly: true
+            name:
+              type: string
+              maxLength: 512
+            price:
+              type: string
+              format: decimal
+              multipleOf: 0.01
+              maximum: 10000000000
+              minimum: -10000000000
+            discount_price:
+              type: string
+              format: decimal
+              multipleOf: 0.01
+              maximum: 10000000000
+              minimum: -10000000000
+              nullable: true
+            description:
+              type: string
+              nullable: true
+            preview_image:
+              type: string
+              format: binary
+              nullable: true
+            category:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  readOnly: true
+                name:
+                  type: string
+                  maxLength: 120
+              required:
+              - name
+          required:
+          - name
+          - price
+          - category
+        order:
+          type: integer
+          maximum: 32767
+          minimum: 0
+      required:
+      - product
+      - order

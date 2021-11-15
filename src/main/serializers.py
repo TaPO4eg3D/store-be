@@ -25,6 +25,14 @@ class ProductCategorySerializer(serializers.ModelSerializer):
         )
 
 
+class UpdateProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Product
+        fields = (
+            'additional_options',
+        )
+
+
 class ProductSerializer(serializers.ModelSerializer):
     category = ProductCategorySerializer()
 
@@ -38,6 +46,7 @@ class ProductSerializer(serializers.ModelSerializer):
             'description',
             'preview_image',
             'category',
+            'additional_options',
         )
 
 class HomePageSlideSerializer(serializers.ModelSerializer):
