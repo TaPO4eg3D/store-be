@@ -76,7 +76,7 @@ def _get_price_for_oder_product(order_product: 'models.OrderProduct') -> Decimal
     return resulting_price
 
 
-def get_order_price(order_id: int) -> float:
+def get_order_price(order_id: int) -> Decimal:
     order = models.Order.objects.filter(
         id=order_id,
     ).prefetch_related(
@@ -91,7 +91,7 @@ def get_order_price(order_id: int) -> float:
     if not order:
         raise ValidationError('Order #%s is not found!' % order_id)
 
-    resulting_price: float = 0
+    resulting_price = Decimal(0)
 
     # TODO: Fix typings
     for order_product in order.order_products.all():
@@ -104,12 +104,14 @@ def get_payeer_url(data: PayeerData) -> str:
     key = config.PAYEER_KEY
     merchant_id = config.PAYEER_MERCHANT_ID
 
+    description = base64.b64encode(data.description.encode('utf-8')).decode('utf-8')
+
     signature_values = (
         merchant_id,
         data.order_id,
         data.amount,
         data.currency,
-        data.description,
+        description,
         key,
     )
     
@@ -119,13 +121,12 @@ def get_payeer_url(data: PayeerData) -> str:
     ])
 
     signature = sha256(signature_string.encode('utf-8')).hexdigest().upper()
-    description = base64.b64encode(data.description.encode('utf-8'))
 
     return BASE_PAYEER_URL + urlencode({
         'm_shop': merchant_id,
         'm_orderid': data.order_id,
         'm_amount': data.amount,
         'm_curr': data.currency,
-        'm_desc': description.decode('utf-8'),
+        'm_desc': description,
         'm_sign': signature,
     })
