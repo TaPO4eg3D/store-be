@@ -121,6 +121,11 @@ class Order(TimeStampModel):
         related_name='orders',
     )
 
+    is_payed = models.BooleanField(
+        default=False,
+        help_text='Has been payed through Payeer',
+    )
+
 
 class OrderProduct(TimeStampModel):
     order = models.ForeignKey(

@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.db.models import Max, Min, Count
 
@@ -99,7 +100,7 @@ class RecommendedProductSlideViewset(ModelViewSet):
     serializer_class = serializers.RecommendedProductSlideSerializer
 
 
-class OrderView(APIView):
+class CreateOrderView(APIView):
     @transaction.atomic
     def post(self, request, *args, **kwargs):
         serializer = serializers.CreateOrderSerializer(data=request.data)
@@ -142,3 +143,31 @@ class OrderView(APIView):
         models.OrderProduct.objects.bulk_create(order_items)
 
         return order_items
+
+
+class ConfirmOrderView(APIView):
+    def post(self, request, *args, **kwargs):
+        # TODO: Add IP check
+
+        serializer = serializers.ConfirmOrderSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        signature = serializer.calculate_signature()
+        validated_data = serializer.validated_data
+
+        if not validated_data:
+            raise ValidationError('Something is wrong!')
+
+        if signature != validated_data['m_sign']:
+            return Response(f'{validated_data["m_orderid"]}|error')
+
+        if validated_data['m_status'] == 'success':
+            models.Order.objects.filter(
+                id=validated_data['m_orderid'],
+            ).update(
+                is_payed=True,
+            )
+
+            # TODO: Send an email?
+
+            return Response(f'{validated_data["m_orderid"]}|success')
