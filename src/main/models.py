@@ -126,8 +126,21 @@ class OrderProduct(TimeStampModel):
     order = models.ForeignKey(
         to=Order,
         on_delete=models.CASCADE,
+        related_name='order_products',
     )
     product = models.ForeignKey(
         to=Product,
         on_delete=models.CASCADE,
+        related_name='order_products',
+    )
+
+    amount = models.PositiveIntegerField()
+
+    selected_items = models.JSONField(
+        null=True,
+        blank=True,
+    )
+    selected_items_meta = models.JSONField(
+        null=True,
+        blank=True,
     )

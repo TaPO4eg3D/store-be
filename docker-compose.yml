@@ -15,6 +15,8 @@ services:
     depends_on:
       - postgres
     command: ['python', 'manage.py', 'runserver', '0.0.0.0:8000']
+    stdin_open: true
+    tty: true
     networks:
       store_main: {}
 
@@ -27,6 +29,11 @@ services:
       - database:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    networks:
+      store_main: {}
+
+  redis:
+    image: redis:6.2.6-alpine
     networks:
       store_main: {}
 

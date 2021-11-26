@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.db.models import Max, Min, Count
 
 from rest_framework.views import APIView
@@ -8,7 +9,7 @@ from rest_framework.response import Response
 from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
 
-from . import models, serializers, filters
+from . import models, serializers, filters, utils
 
 # Create your views here.
 
@@ -96,3 +97,48 @@ class RecommendedProductSlideViewset(ModelViewSet):
     """
     queryset = models.RecommendedProductSlide.objects.order_by('order').select_related('product')
     serializer_class = serializers.RecommendedProductSlideSerializer
+
+
+class OrderView(APIView):
+    @transaction.atomic
+    def post(self, request, *args, **kwargs):
+        serializer = serializers.CreateOrderSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        order = self._create_order()
+        self._create_order_items(order, serializer.validated_data)
+
+        price = utils.get_order_price(order.pk)
+        payeer_url = utils.get_payeer_url(utils.PayeerData(
+            order_id=order.pk,
+            amount=price,
+            currency='USD',  # TODO: Get it from the request
+            description=f'Payment of Order #{order.pk}'
+        ))
+
+        return Response({
+            'order_id': order.pk,
+            'price': price,
+            'url': payeer_url,
+        })
+
+    def _create_order(self) -> models.Order:
+        return models.Order.objects.create()
+
+    def _create_order_items(self, order: models.Order, validated_data: dict) -> list[models.OrderProduct]:
+        order_items = list()
+
+        for item in validated_data['items']:
+            order_items.append(
+                models.OrderProduct(
+                    order_id=order.pk,
+                    amount=item['amount'],
+                    product_id=item['product_id'],
+                    selected_items=item['selected_items'],
+                    selected_items_meta=item['selected_items_meta'],
+                ),
+            )
+
+        models.OrderProduct.objects.bulk_create(order_items)
+
+        return order_items

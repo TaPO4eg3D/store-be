@@ -12,6 +12,7 @@ router.register('recommended-product-slides', views.RecommendedProductSlideViews
 
 urlpatterns = [
     path('popular-products', views.PopularProductsView.as_view()),
+    path('orders', views.OrderView.as_view()),
     path('filters/price-range', views.PriceRangeView.as_view()),
     *router.urls,
 ]

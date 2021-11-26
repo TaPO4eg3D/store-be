@@ -69,3 +69,17 @@ class RecommendedProductSlideSerializer(serializers.ModelSerializer):
             'product',
             'order',
         )
+
+
+class CreateOrderItemSerializer(serializers.Serializer):
+    product_id = serializers.IntegerField()
+    amount = serializers.IntegerField()
+
+    selected_items = serializers.JSONField()
+    selected_items_meta = serializers.JSONField()
+
+
+class CreateOrderSerializer(serializers.Serializer):
+    items = serializers.ListSerializer(
+        child=CreateOrderItemSerializer(),
+    )
