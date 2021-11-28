@@ -1,9 +1,11 @@
 from django.core.exceptions import ValidationError
 from django.db import transaction
-from django.db.models import Max, Min, Count
+from django.db.models import Max, Min, Count, Value, OuterRef, DecimalField
+from django.db.models.expressions import Subquery
+from django.db.models.functions import Coalesce
 
 from rest_framework.views import APIView
-from rest_framework.viewsets import ModelViewSet 
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
 
 from rest_framework.response import Response
 
@@ -11,6 +13,7 @@ from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
 
 from . import models, serializers, filters, utils
+
 
 # Create your views here.
 
@@ -171,3 +174,47 @@ class ConfirmOrderView(APIView):
             # TODO: Send an email?
 
             return Response(f'{validated_data["m_orderid"]}|success')
+
+
+class CurrencyViewset(GenericViewSet):
+    queryset = models.Currency.objects.all()
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return serializers.CurrencySerializer
+
+        return super().get_serializer_class()
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+
+        default_currency = queryset.filter(
+            is_default=True,
+        ).annotate(
+            rate=Value(1),
+        ).first()
+
+        if not default_currency:
+            raise ValidationError('No default currency!')
+        
+        available_currencies = tuple(queryset.exclude(
+            id=default_currency.pk,
+        ).annotate(
+            rate=Coalesce(
+                Subquery(
+                    models.CurrencyRate.objects.filter(  # type: ignore
+                        source=default_currency.pk,
+                        target=OuterRef('pk'),
+                    ).values('rate')[:1],
+                    output_field=DecimalField(),
+                ), 1,
+                output_field=DecimalField(),
+            )
+        ))
+
+        serializer_class = self.get_serializer_class()
+
+        return Response({
+            'default': serializer_class(default_currency).data,
+            'available': serializer_class(available_currencies, many=True).data
+        })

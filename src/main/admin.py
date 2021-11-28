@@ -57,3 +57,24 @@ class OrderAdmin(admin.ModelAdmin):
 @admin.register(models.OrderProduct)
 class OrderProductAdmin(admin.ModelAdmin):
     pass
+
+
+@admin.register(models.Currency)
+class CurrencyAdmin(admin.ModelAdmin):
+    readonly_fields = ('set_as_default',)
+
+    # description functions like a model field's verbose_name
+    @admin.display(description='Is default')
+    def set_as_default(self, instance):
+        if not instance.id:
+            return '-'
+        
+        if instance.is_default:
+            return mark_safe(f'<a href="/builder/{instance.id}">REMOVE DEFAULT</a>')
+        else:
+            return mark_safe(f'<a href="/builder/{instance.id}">SET DEFAULT</a>')
+
+
+@admin.register(models.CurrencyRate)
+class CurrencyRateAdmin(admin.ModelAdmin):
+    pass

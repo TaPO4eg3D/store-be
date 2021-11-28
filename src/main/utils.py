@@ -130,3 +130,11 @@ def get_payeer_url(data: PayeerData) -> str:
         'm_desc': description,
         'm_sign': signature,
     })
+
+
+def set_default_currency(currency_id: int) -> None:
+    models.Currency.objects.all().update(is_default=False)
+
+    models.Currency.objects.filter(
+        id=currency_id,
+    ).update(is_default=True)

@@ -5,6 +5,7 @@ from . import views
 
 router = DefaultRouter()
 
+router.register('currencies', views.CurrencyViewset)
 router.register('categories', views.CategoryViewset)
 router.register('products', views.ProductViewset)
 router.register('home-page-slides', views.HomePageSlideViewset)

@@ -149,3 +149,33 @@ class OrderProduct(TimeStampModel):
         null=True,
         blank=True,
     )
+
+
+class Currency(models.Model):
+    code = models.CharField(max_length=20)
+    display = models.CharField(max_length=120)
+
+    is_default = models.BooleanField(
+        default=False,
+    )
+
+    def __str__(self) -> str:
+        return f'{self.code} ({self.display})'
+
+
+class CurrencyRate(models.Model):
+    source = models.ForeignKey(
+        to=Currency,
+        on_delete=models.CASCADE,
+        related_name='source_rates',
+    )
+    target = models.ForeignKey(
+        to=Currency,
+        on_delete=models.CASCADE,
+        related_name='target_rates',
+    )
+
+    rate = models.DecimalField(
+        max_digits=4,
+        decimal_places=2,
+    )

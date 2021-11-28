@@ -133,3 +133,14 @@ class ConfirmOrderSerializer(serializers.Serializer):
         signature = sha256(signature_string).hexdigest().upper()
 
         return signature
+
+
+class CurrencySerializer(serializers.ModelSerializer):
+    rate = serializers.DecimalField(
+        max_digits=4,
+        decimal_places=2,
+    )
+
+    class Meta:
+        fields = ('id', 'code', 'display', 'rate',)
+        model = models.Currency
