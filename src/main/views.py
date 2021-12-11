@@ -3,6 +3,7 @@ from django.db import transaction
 from django.db.models import Max, Min, Count, Value, OuterRef, DecimalField
 from django.db.models.expressions import Subquery
 from django.db.models.functions import Coalesce
+from django.db.models.query import Prefetch
 
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
@@ -101,6 +102,21 @@ class RecommendedProductSlideViewset(ModelViewSet):
     """
     queryset = models.RecommendedProductSlide.objects.order_by('order').select_related('product')
     serializer_class = serializers.RecommendedProductSlideSerializer
+
+
+class OrderViewset(ModelViewSet):
+    # TODO: Add permissions
+
+    queryset = models.Order.objects.order_by('-created_at').prefetch_related(
+        Prefetch(
+            'order_products',
+            models.OrderProduct.objects.select_related(
+                'product',
+            ),
+        ),
+    )
+
+    serializer_class = serializers.OrderSerializer
 
 
 class CreateOrderView(APIView):

@@ -13,12 +13,12 @@ class TimeStampModel(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=120)
-    parent = models.OneToOneField(
+    parent = models.ForeignKey(
         'self',
         on_delete=models.CASCADE,
         null=True,
         blank=True,
-        related_name='child',
+        related_name='children',
     )
 
     def __str__(self) -> str:

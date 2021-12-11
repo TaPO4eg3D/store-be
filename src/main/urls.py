@@ -5,6 +5,7 @@ from . import views
 
 router = DefaultRouter()
 
+router.register('orders', views.OrderViewset)
 router.register('currencies', views.CurrencyViewset)
 router.register('categories', views.CategoryViewset)
 router.register('products', views.ProductViewset)
@@ -13,7 +14,7 @@ router.register('recommended-product-slides', views.RecommendedProductSlideViews
 
 urlpatterns = [
     path('popular-products', views.PopularProductsView.as_view()),
-    path('orders', views.CreateOrderView.as_view()),
+    path('create-order', views.CreateOrderView.as_view()),
     path('filters/price-range', views.PriceRangeView.as_view()),
     *router.urls,
 ]

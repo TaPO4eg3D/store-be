@@ -43,7 +43,7 @@ def _get_item_map(product: models.Product) -> dict:
     return item_map
 
 
-def _get_price_for_oder_product(order_product: 'models.OrderProduct') -> Decimal:
+def get_price_for_order_product(order_product: 'models.OrderProduct') -> Decimal:
     resulting_price: Decimal = order_product.product.price * order_product.amount
 
     selected_items = order_product.selected_items
@@ -95,7 +95,17 @@ def get_order_price(order_id: int) -> Decimal:
 
     # TODO: Fix typings
     for order_product in order.order_products.all():
-        resulting_price += _get_price_for_oder_product(order_product)
+        resulting_price += get_price_for_order_product(order_product)
+
+    return resulting_price
+
+
+def calculate_order_price(order: models.Order) -> Decimal:
+    resulting_price = Decimal(0)
+
+    # TODO: Fix typings
+    for order_product in order.order_products.all():
+        resulting_price += get_price_for_order_product(order_product)
 
     return resulting_price
 

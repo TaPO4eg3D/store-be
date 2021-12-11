@@ -1,3 +1,4 @@
+from decimal import Decimal
 from hashlib import sha256
 
 from constance import config
@@ -6,18 +7,18 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework_recursive.fields import RecursiveField
 
-from . import models
+from . import models, utils
 
 
 class CategorySerializer(serializers.ModelSerializer):
-    child = RecursiveField(read_only=True)
+    children = RecursiveField(read_only=True, many=True)
 
     class Meta:
         model = models.Category
         fields = (
             'id',
             'name',
-            'child',
+            'children',
         )
 
 
@@ -144,3 +145,33 @@ class CurrencySerializer(serializers.ModelSerializer):
     class Meta:
         fields = ('id', 'code', 'display', 'rate',)
         model = models.Currency
+
+
+class OrderProductSerialzier(serializers.ModelSerializer):
+    product = ProductSerializer()
+    price = serializers.SerializerMethodField()
+
+    def get_price(self, obj):
+        return utils.get_price_for_order_product(obj)
+
+    class Meta:
+        fields = (
+            'product',
+            'amount',
+            'selected_items',
+            'selected_items_meta',
+            'price',
+        )
+        model = models.OrderProduct
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    price = serializers.SerializerMethodField()
+    order_products = OrderProductSerialzier(many=True)
+
+    def get_price(self, obj: models.Order) -> Decimal:
+        return utils.calculate_order_price(obj)
+
+    class Meta:
+        fields = ('id', 'order_products', 'is_payed', 'price', 'created_at',)
+        model = models.Order
