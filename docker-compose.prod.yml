@@ -6,16 +6,15 @@ services:
       context: .
       dockerfile: ./docker/local/django/Dockerfile
     env_file:
-      - ./env/local/django.env
-      - ./env/local/postgres.env
+      - ./env/prod/django.env
+      - ./env/prod/postgres.env
     ports:
       - "8000:8000"
-      - "7000:7000" # TODO: Remove, just for testing
     volumes:
       - .:/app
     depends_on:
       - postgres
-    command: ['python', 'manage.py', 'runserver', '0.0.0.0:8000']
+    command: ['gunicorn', 'config.wsgi']
     stdin_open: true
     tty: true
     networks:
@@ -28,8 +27,6 @@ services:
       - ./env/local/postgres.env
     volumes:
       - database:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
     networks:
       store_main: {}
 
